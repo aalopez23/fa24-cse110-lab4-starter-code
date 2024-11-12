@@ -1,5 +1,8 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "../../context/AppContext";
+import { createExpense } from "../../utils/expense-utils"; // Import the function
+import { Expense } from "../../types/types";
+
 const AddExpenseForm = () => {
   // Exercise: Consume the AppContext here
   const { expenses, setExpenses } = useContext(AppContext);
@@ -7,20 +10,29 @@ const AddExpenseForm = () => {
   const [name, setName] = useState("");
   const [cost, setCost] = useState("");
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // Exercise: Add add new expense to expenses context array
-    const newExpense = {
+    const newExpense: Expense = {
       id: Date.now().toString(), // Convert the id to a string
-      name,
+      description: name,
       cost: parseFloat(cost),
     };
 
-    setExpenses([...expenses, newExpense]);
+    try {
+      // Call createExpense to save the new expense on the backend
+      const savedExpense = await createExpense(newExpense);
 
-    setName("");
-    setCost("");
+      // Update the expenses context array with the saved expense
+      setExpenses([...expenses, savedExpense]);
+
+      // Reset input fields
+      setName("");
+      setCost("");
+    } catch (error) {
+      console.error("Failed to create expense:", error);
+    }
   };
 
   return (
@@ -56,7 +68,6 @@ const AddExpenseForm = () => {
       </div>
     </form>
   );
-
 };
 
 export default AddExpenseForm;
