@@ -6,7 +6,7 @@ import Remaining from "components/Remaining";
 test("removes an expense and updates Remaining and Total Spent", () => {
   render(
     <AppProvider>
-      <ExpenseItem id="1" name="Groceries" cost={100} />
+      <ExpenseItem id="1" description="Groceries" cost={100} />
       <Remaining />
     </AppProvider>
   );
